@@ -49,24 +49,17 @@ for atleta in atletas:
 # -------- Funções auxiliares --------
 def read_non_empty(prompt):
     value = input(prompt).strip()
-    while not value or value.isspace():
+    while not value or value.isnumeric():
         print("Entrada inválida. Digite novamente.")
         value = input(prompt).strip()
     return value
 
 def read_positive_int(prompt):
-    while True:
-        valor = input(prompt)
-        if valor.isnumeric() and int(valor) > 0:
-            return int(valor)
+    valor = input(prompt)
+    while not valor.isnumeric() or int(valor) < 0:
         print("Entrada inválida. Digite um número positivo.")
-
-def read_non_negative_int(prompt):
-    while True:
         valor = input(prompt)
-        if valor.isnumeric() and int(valor) >= 0:
-            return int(valor)
-        print("Entrada inválida. Digite um número válido.")
+    return int(valor)
 
 def select_option(options, prompt, allow_blank=False):
     for idx, opt in enumerate(options, start=1):
@@ -74,15 +67,17 @@ def select_option(options, prompt, allow_blank=False):
     if allow_blank:
         print("0 - Não especificar")
 
-    while True:
-        choice = input(prompt).strip()
-        if choice.isnumeric():
-            n = int(choice)
-            if allow_blank and n == 0:
-                return ""
-            if 1 <= n <= len(options):
-                return options[n-1]
+    choice = input(prompt).strip()
+    
+    while not choice.isnumeric() or int(choice) not in range(1, len(options)+1):
         print("Opção inválida. Tente novamente.")
+        choice = input(prompt).strip()
+
+    choice = int(choice)
+    if allow_blank and choice == 0:
+        return ""
+    if 1 <= choice <= len(options):
+        return options[choice-1]
 
 # -------- Funcionalidades --------
 def cadastrar_atleta():
@@ -110,10 +105,11 @@ def cadastrar_clube():
     print(f"✅ Clube {nome} cadastrado com sucesso!\n")
 
 def registrar_partida():
-    clubeA = read_non_empty("Digite o nome do Clube A: ")
-    clubeB = read_non_empty("Digite o nome do Clube B: ")
-    placarA = read_non_negative_int(f"Quantos gols o {clubeA} marcou? ")
-    placarB = read_non_negative_int(f"Quantos gols o {clubeB} marcou? ")
+    nomes_clubes = [c["nome"] for c in clubes]
+    clubeA = select_option(nomes_clubes, "Escolha o Clube A: ")
+    clubeB = select_option(nomes_clubes, "Escolha o Clube B: ")
+    placarA = read_positive_int(f"Quantos gols o {clubeA} marcou? ")
+    placarB = read_positive_int(f"Quantos gols o {clubeB} marcou? ")
     partidas.append({"clubeA": clubeA, "clubeB": clubeB, "placar": f"{placarA} x {placarB}"})
     print("✅ Partida registrada com sucesso!\n")
 
@@ -135,6 +131,15 @@ def listar_clubes():
             print(f"- {c['nome']} ({c['cidade']}) - {len(c['atletas'])} atletas")
         print("")
 
+def listar_partidas():
+    if not partidas:
+        print("Nenhuma partida registrada ainda.\n")
+    else:
+        print("\n📋 Lista de Partidas:")
+        for p in partidas:
+            print(f"- {p['clubeA']} vs {p['clubeB']} - Placar: {p['placar']}")
+        print("")
+
 # -------- Menu --------
 def menu():
     while True:
@@ -144,9 +149,10 @@ def menu():
         print("3 - Registrar Partida")
         print("4 - Listar Atletas")
         print("5 - Listar Clubes")
-        print("6 - Sair")
+        print("6 - Listar Partidas")
+        print("7 - Sair")
         opcao = input("Escolha uma opção: ").strip()
-        while not opcao.isnumeric() or int(opcao) not in range(1, 7):
+        while not opcao.isnumeric() or int(opcao) not in range(1, 8):
             print("❌ Opção inválida, tente novamente.\n")
             opcao = input("Escolha uma opção: ").strip()
         if opcao == "1": cadastrar_atleta()
@@ -154,12 +160,11 @@ def menu():
         elif opcao == "3": registrar_partida()
         elif opcao == "4": listar_atletas()
         elif opcao == "5": listar_clubes()
-        elif opcao == "6":
+        elif opcao == "6": listar_partidas()
+        elif opcao == "7":
             print("👋 Saindo do sistema... Até logo!")
             break
         else:
             print("❌ Opção inválida, tente novamente.\n")
 
-# Executar o programa
-if __name__ == "__main__":
-    menu()
+menu()
