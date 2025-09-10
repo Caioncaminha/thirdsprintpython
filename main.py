@@ -1,5 +1,6 @@
-# Passa a Bola - Simulador Básico de Gestão do Futebol Feminino
+# Passa a Bola - Simulador de Gestão do Futebol Feminino
 
+# Dados iniciais (Pode ser substituído por um banco de dados real)
 atletas = [
     {"nome": "Ana", "idade": 24, "posicao": "Meia", "clube": "Corinthians"},
     {"nome": "Bia", "idade": 22, "posicao": "Atacante", "clube": "Corinthians"},
@@ -48,6 +49,7 @@ for atleta in atletas:
 
 # -------- Funções auxiliares --------
 def read_non_empty(prompt):
+    # Força o usuário a digitar algo que não seja vazio ou numérico
     value = input(prompt).strip()
     while not value or value.isnumeric():
         print("Entrada inválida. Digite novamente.")
@@ -55,6 +57,7 @@ def read_non_empty(prompt):
     return value
 
 def read_positive_int(prompt):
+    # Força o usuário a digitar um número positivo
     valor = input(prompt)
     while not valor.isnumeric() or int(valor) < 0:
         print("Entrada inválida. Digite um número positivo.")
@@ -62,6 +65,7 @@ def read_positive_int(prompt):
     return int(valor)
 
 def select_option(options, prompt, allow_blank=False):
+    # Força o usuário a escolher uma opção válida de uma lista
     for idx, opt in enumerate(options, start=1):
         print(f"{idx} - {opt}")
     if allow_blank:
@@ -91,7 +95,7 @@ def cadastrar_atleta():
 
     atleta = {"nome": nome, "idade": idade, "posicao": posicao, "clube": clube}
     atletas.append(atleta)
-    # adiciona atleta ao clube
+    # Adiciona atleta ao clube
     for c in clubes:
         if c["nome"] == clube:
             c["atletas"].append(nome)
@@ -99,12 +103,14 @@ def cadastrar_atleta():
     print(f"✅ Atleta {nome} cadastrada com sucesso!\n")
 
 def cadastrar_clube():
+    # Cadastrar novo clube
     nome = read_non_empty("Digite o nome do clube: ")
     cidade = read_non_empty("Digite a cidade do clube: ")
     clubes.append({"nome": nome, "cidade": cidade, "atletas": []})
     print(f"✅ Clube {nome} cadastrado com sucesso!\n")
 
 def registrar_partida():
+    # Registrar nova partida
     nomes_clubes = [c["nome"] for c in clubes]
     clubeA = select_option(nomes_clubes, "Escolha o Clube A: ")
     clubeB = select_option(nomes_clubes, "Escolha o Clube B: ")
@@ -114,6 +120,7 @@ def registrar_partida():
     print("✅ Partida registrada com sucesso!\n")
 
 def listar_atletas():
+    # Listar todas as atletas
     if not atletas:
         print("Nenhuma atleta cadastrada ainda.\n")
     else:
@@ -123,6 +130,7 @@ def listar_atletas():
         print("")
 
 def listar_clubes():
+    # Listar todos os clubes
     if not clubes:
         print("Nenhum clube cadastrado ainda.\n")
     else:
@@ -132,6 +140,7 @@ def listar_clubes():
         print("")
 
 def listar_partidas():
+    # Listar todas as partidas
     if not partidas:
         print("Nenhuma partida registrada ainda.\n")
     else:
@@ -152,9 +161,6 @@ def menu():
         print("6 - Listar Partidas")
         print("7 - Sair")
         opcao = input("Escolha uma opção: ").strip()
-        while not opcao.isnumeric() or int(opcao) not in range(1, 8):
-            print("❌ Opção inválida, tente novamente.\n")
-            opcao = input("Escolha uma opção: ").strip()
         if opcao == "1": cadastrar_atleta()
         elif opcao == "2": cadastrar_clube()
         elif opcao == "3": registrar_partida()
