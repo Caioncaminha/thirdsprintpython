@@ -60,7 +60,7 @@ No início, o script já sincroniza os nomes das atletas em `clubes[].atletas`.
 2. No terminal:
 
 ```bash
-python passabola.py
+python main.py
 ```
 
 3. Segue o menu e digita as opções (1 a 7).
